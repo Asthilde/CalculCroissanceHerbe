@@ -1,0 +1,15 @@
+{
+    "name": "vendor/composer",
+    "description": "test installation composer",
+    "type": "library",
+    "require": {
+        "ext-gd": "*",
+        "ext-zip": "*",
+        "phpoffice/phpspreadsheet": "^1.28"
+     },
+     "config": {
+        "platform": {
+            "php": "8.2"
+        }
+    }
+}
