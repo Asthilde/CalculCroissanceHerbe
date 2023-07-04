@@ -459,7 +459,7 @@ function trouverMesuresParcelles($listeFichiers, $listeParcelles) {
                                     $d1 = $worksheet->getCellByColumnAndRow(7, $row)->getCalculatedValue();
                                     $d2 = $worksheet->getCellByColumnAndRow(6, $row)->getCalculatedValue();
                                     $value = calculCroissance($d1, $d2, $h1, $h2);
-                                    echo '<br/>';
+                                    //echo '<br/>';
                                     $sheetRes->setCellValue('H'.$nvLigne, $value);
                                     $sheetRes->setCellValue('I'.$nvLigne, $d1);
                                 }
@@ -477,7 +477,7 @@ function trouverMesuresParcelles($listeFichiers, $listeParcelles) {
     return($spreadsheetRes);
 }
 
-/** LE PROBLEME VIENT D'ICI AVEC LE CALCUL DU NB DE JOURS ENTRE 2 DATES !
+/** 
  * Calcule la croissance d'herbe pour une date donnée en fonction des hauteurs d'herbes de date J et date J-n
  * Prend en paramètre les dates J et J-n et leurs hauteurs d'herbes correspondantes
  * Renvoie la valeur de croissance correspondante
@@ -831,8 +831,8 @@ function calculMoyenne($spreadsheet,$groupe) {
 }
 
 /**
- * Créé le fichier Excel résultat contenant les moyennes de croissance pour chaque période pour le groupe et l'année demandés par l'utilisateur
- * Prend en paramètres la feuille de calcul intermédiaire créée et le groupe choisi par l'utilisateur
+ * Créé le fichier Excel résultat contenant les moyennes de croissance pour chaque période pour la caractéristique et l'année demandées par l'utilisateur
+ * Prend en paramètres la feuille de calcul intermédiaire créée et les caractéristiques choisies par l'utilisateur
  * Renvoie le fichier Excel final
  */
 function calculMoyenneParcelles($spreadsheet,$caracteristique) {
@@ -936,7 +936,7 @@ function calculMoyenneParcelles($spreadsheet,$caracteristique) {
 
 /**
  * Affiche sur la page web le fichier Excel résultat
- * Prend en paramètre le fichier Excel et les numéros des worksheet à afficher (paires = semaine / impaires = décades)
+ * Prend en paramètre le fichier Excel, les numéros des worksheet à afficher (paires = semaine / impaires = décades) et un booléen qui indique si le fichier à afficher est celui d'un choix de caractéristiques
  * Renvoie l'affichage d'un tableau HTML contenant les valeurs du fichier Excel
  */
 function afficheFichier($spreadsheet,$tabFichiers,$choixCaracteristiques) {
@@ -958,10 +958,11 @@ function afficheFichier($spreadsheet,$tabFichiers,$choixCaracteristiques) {
             $highestRow = $worksheet->getHighestRow(); 
             $highestColumn = $worksheet->getHighestColumn(); 
             $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn); // e.g. 5
-                echo '<h2 id="annee">Année '. $nomAnnee . '</h2>';
-                if($choixCaracteristiques){
-                    echo '<h3>'. substr($nomsPages[2*$i],5,-7) . '</h3>';
-                }
+            //Pour ne pas avoir une colonne vide (du au fichier creationSpreadSheet qui est calqué sur 6 colonnes)
+            if($choixCaracteristiques){
+                $highestColumnIndex = 5;
+            }
+            echo '<h2 id="annee">Année '. $nomAnnee . '</h2>';
             echo '<table>' . "\n";
             for ($row = 1; $row <= $highestRow; ++$row) {
                     echo '<tr>' . PHP_EOL;
@@ -987,22 +988,23 @@ function afficheFichier($spreadsheet,$tabFichiers,$choixCaracteristiques) {
  * Prend en paramètre le fichier Excel à enregistrer et le groupe selectionné par l'utilisateur
  * Renvoie un formulaire d'enregistrement du fichier Excel correspondant
  */
-function enregistrementFichier($spreadsheet,$groupe,$caracteristique) {
-    if($caracteristique!=""){
+function enregistrementFichier($groupe,$caracteristique) {
+    if($caracteristique==""){
         $nomGroupe=nomGroupe($groupe);
         $nomFichier = "Moyennes croissances ".$nomGroupe;//.".xlsx";
     }
     else {
-        $nomFichier = "Moyennes croissances parcelles ".$caracteristique;
+        $nomFichier = "Moyennes croissances parcelles ".$caracteristique[0];
     }
+    $spreadsheet = lireFichier("fichierInter.xlsx",false);
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
     header('Content-Type: application/vnd.ms-excel');
     header("Content-Disposition: attachment;filename=\"$nomFichier\"");
     header('Cache-Control: max-age=0');
-    header('Expires: Fri, 11 Nov 2011 11:11:11 GMT');
+    //header('Expires: Fri, 11 Nov 2011 11:11:11 GMT');
     header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
     header('Cache-Control: cache, must-revalidate');
-    header('Pragma: public');
+    //header('Pragma: public');
     $writer->save('php://output');
 }
 ?>

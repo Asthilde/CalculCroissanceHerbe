@@ -1,7 +1,10 @@
 <?php
 session_start();
 include 'php/affichageSelection.php';
-if(!isset($_POST['sauvegarder'])){
+/*if(isset($_POST['sauvegarder'])){
+	enregistrementFichier("",$caracteristique);
+}
+if(!isset($_POST['sauvegarder'])){*/
 ?>
 <html lang="fr">
 <?php include 'php/head.php' ?>
@@ -16,7 +19,7 @@ if(!isset($_POST['sauvegarder'])){
         <div class="d-flex flex-row justify-content-center align-items-center mt-3 mb-4">		
 			<a class="btn btn-outline-light" href="interface.php">Choisir un groupe d'exploitations</a>
 		</div>
-		<form method="post" action="interface.php">
+		<form method="post" action="interfaceCaracteristique.php">
 			<div class="d-flex flex-row align-items-center justify-content-between mb-3">	
                 <img alt="parcelle" src="images/parcelle.jpg" height="120px" class="mr-2"/>
 				<div class="col-md-6 px-2">
@@ -50,23 +53,23 @@ if(!isset($_POST['sauvegarder'])){
 		</form>	
 	</header>	
 
-	<?php if($groupe!=="") { ?>
+	<?php if($caracteristique!=="") { ?>
 	<div class="d-flex justify-content-center align-items-center mb-3">
-		<form method="post" action="interface.php">
+		<a class="btn btn-secondary" href="fichierInter2.xlsx" download="Moyennes croissances parcelles <?php echo $caracteristique[0] ?>">Sauvegarder résultats</a>	
+		<!--<form method="post" action="interface.php">
 			<button type="submit" class="btn btn-secondary" name="sauvegarder" value="Enregistrer fichier Excel">Sauvegarder résultats</button>
-		</form>
+		</form>-->
 	</div>
 	<ul class="nav nav-tabs">
-		<li class="nav-item"><a class="nav-link active" href="interface.php">Affichage par semaines</a></li>
-		<li class="nav-item"><a a class="nav-link" href="interfaceDecade.php">Affichage par décades</a></li>
+		<li class="nav-item"><a class="nav-link active" href="interfaceCaracteristique.php">Affichage par semaines</a></li>
+		<li class="nav-item"><a a class="nav-link" href="interfaceCaracteristiqueDecade.php">Affichage par décades</a></li>
 	</ul>
 	<?php } ?>	
 		
 	<div class="mt-3" id="tableau">	
 	<?php
-}
-	//Tester avec choix d'une caractéristique ! 
-	//A REMODIFIER POUR AVOIR DU CODE PLUS CLAIR ! + Mettre à jour afficheFichier si choix d'une caractéristique ! 
+//}
+	//Faire la page version Decade et vérifier l'envoi des infos + problèmes éventuels liés au passage de caractéristiques à groupe
 	//var_dump($caracteristique);
 		if(isset($_SESSION["Decade"]) && isset($_SESSION["caracteristique"])){
 			unset($_SESSION["Decade"]);
@@ -82,8 +85,8 @@ if(!isset($_POST['sauvegarder'])){
 			$fichiers=selectionFichier($annee);
 			//Pour le moment une seule caractéristique prise en compte !
 			foreach($caracteristique as $caracChoisie){
-				$parcelles=categorisationParcelles("ExtractionDonneesCheptel_L070-FR-38523088_2022-12-18.xlsx",$caracChoisie);
-				$fichierInter = trouverMesuresParcelles($annees,$parcelles);
+				$parcelles = categorisationParcelles("ExtractionDonneesCheptel_L070-FR-38523088_2022-12-18.xlsx",$caracChoisie);
+				$fichierInter = trouverMesuresParcelles($fichiers,$parcelles);
 				$fichierFinal = calculMoyenneParcelles($fichierInter, $caracChoisie);
 			}
 			
@@ -95,14 +98,10 @@ if(!isset($_POST['sauvegarder'])){
 			afficheFichier($fichierFinal,$tabAffiche,true);
 			//La partie du dessous je peux la mettre dans afficheFichier non ?
 			$writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($fichierFinal);
-			$writer->save("fichierFinalTest2.xlsx");
+			$writer->save("fichierInter2.xlsx");
 		}?>
     </div>
 </div>
 <script src="js/fonctions.js"></script>		
 </body>
 </html>
-<?php //Tester directement un lien a plutot que le bouton d'enregistrement --> Revérifier comment sauvegarder un fichier FONCTIONNE PAS !
-if(isset($_POST['sauvegarder'])){
-	enregistrementFichier($fichierFinal,$groupe,"");
-}?>

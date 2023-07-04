@@ -1,7 +1,10 @@
 <?php
 session_start();
 include 'php/affichageSelection.php';
-if(!isset($_POST['sauvegarder'])){
+/*if(isset($_POST['sauvegarder'])){
+	enregistrementFichier($groupe,"");
+}
+if(!isset($_POST['sauvegarder'])){*/
 ?>
 <html lang="fr">
 <?php include 'php/head.php' ?>
@@ -56,9 +59,10 @@ if(!isset($_POST['sauvegarder'])){
 
 	<?php if($groupe!=="") { ?>
 	<div class="d-flex justify-content-center align-items-center mb-3">
-		<form method="post" action="interface.php">
+		<a class="btn btn-secondary" href="fichierInter.xlsx" download="Moyennes croissances <?php echo $groupe ?>">Sauvegarder résultats</a>
+		<!--<form method="post" action="interface.php">
 			<button type="submit" class="btn btn-secondary" name="sauvegarder" value="Enregistrer fichier Excel">Sauvegarder résultats</button>
-		</form>
+		</form>-->
 	</div>
 	<ul class="nav nav-tabs">
 		<li class="nav-item"><a class="nav-link active" href="interface.php">Affichage par semaines</a></li>
@@ -68,10 +72,7 @@ if(!isset($_POST['sauvegarder'])){
 		
 	<div class="mt-3" id="tableau">	
 	<?php
-}
-	//Tester avec choix d'une caractéristique ! 
-	//A REMODIFIER POUR AVOIR DU CODE PLUS CLAIR ! + Mettre à jour afficheFichier si choix d'une caractéristique ! 
-	//var_dump($caracteristique);
+//}
 		if(isset($_SESSION["Decade"]) && isset($_SESSION["groupe"])){
 			unset($_SESSION["Decade"]);
 			$fichierFinal=lireFichier('fichierInter.xlsx',false);
@@ -106,7 +107,3 @@ if(!isset($_POST['sauvegarder'])){
 <script src="js/fonctions.js"></script>		
 </body>
 </html>
-<?php //Tester directement un lien a plutot que le bouton d'enregistrement --> Revérifier comment sauvegarder un fichier FONCTIONNE PAS !
-if(isset($_POST['sauvegarder'])){
-	enregistrementFichier($fichierFinal,$groupe,"");
-}?>
