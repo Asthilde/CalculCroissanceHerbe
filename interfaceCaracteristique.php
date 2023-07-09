@@ -69,11 +69,11 @@ if(!isset($_POST['sauvegarder'])){*/
 	<div class="mt-3" id="tableau">	
 	<?php
 //}
-	//Faire la page version Decade et vérifier l'envoi des infos + problèmes éventuels liés au passage de caractéristiques à groupe
+	//A REMODIFIER !!
 	//var_dump($caracteristique);
 		if(isset($_SESSION["Decade"]) && isset($_SESSION["caracteristique"])){
 			unset($_SESSION["Decade"]);
-			$fichierFinal=lireFichier('fichierInter.xlsx',false);
+			$fichierFinal=lireFichier('fichierInter2.xlsx',false);
 			$tabAffiche;
 			for($i=0; $i<$fichierFinal->getSheetCount();$i+=2){
 				$tabAffiche[]=$i;
@@ -96,7 +96,6 @@ if(!isset($_POST['sauvegarder'])){*/
 			}
 			
 			afficheFichier($fichierFinal,$tabAffiche,true);
-			//La partie du dessous je peux la mettre dans afficheFichier non ?
 			$writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($fichierFinal);
 			$writer->save("fichierInter2.xlsx");
 		}?>
