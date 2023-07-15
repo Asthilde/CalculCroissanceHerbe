@@ -1,10 +1,6 @@
 <?php
 session_start();
 include 'php/affichageSelection.php';
-/*if(isset($_POST['sauvegarder'])){
-	enregistrementFichier("",$caracteristique);
-}
-if(!isset($_POST['sauvegarder'])){*/
 ?>
 <html lang="fr">
 <?php include 'php/head.php' ?>
@@ -23,9 +19,9 @@ if(!isset($_POST['sauvegarder'])){*/
 			<div class="d-flex flex-row align-items-center justify-content-between mb-3">	
                 <img alt="parcelle" src="images/parcelle.jpg" height="120px" class="mr-2"/>
 				<div class="col-md-6 px-2">
-                    <div class="infobulle">
+                    <!--<div class="infobulle">
 						<div class="infobulle-texte" id="aide" style="display:none;">Maintenez Ctrl pour selectionner plusieurs valeurs</div>
-					</div>
+					</div>-->
                     <label id="selectionCaracteristiques" for="choisirCaracteristique" onmouseover="afficher_aide()" onmouseout="afficher_aide()">Choisir une/plusieurs caractéristiques</label>	
 					<select multiple class="form-control mt-2" id="choisirCaracteristique" for="choisirCaracteristiques" name="caracteristique[]">
 						<option value="" <?php if($caracteristique == ""){ echo 'selected="selected"' ;} ?>>Caractéristique(s) de parcelle à choisir</option>
@@ -68,8 +64,6 @@ if(!isset($_POST['sauvegarder'])){*/
 		
 	<div class="mt-3" id="tableau">	
 	<?php
-//}
-	//A REMODIFIER !!
 	//var_dump($caracteristique);
 		if(isset($_SESSION["Decade"]) && isset($_SESSION["caracteristique"])){
 			unset($_SESSION["Decade"]);

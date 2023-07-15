@@ -3,9 +3,10 @@ include './fonctions.php';
 $groupes=array("Region" => array(), "Departement" => array());
 $annees=array();
 $caracteristiques=array();
+//Cookies créés pour 15min
 if(isset($_POST['groupe'])){
 	$groupe=$_POST['groupe'];
-	setcookie('gr',$groupe,time()+3600);
+	setcookie('gr',$groupe,time()+900);
 	$_SESSION["groupe"] = $_POST['groupe'];
 }
 else if(isset($_COOKIE['gr'])){
@@ -18,7 +19,7 @@ else {
 if(isset($_POST['annee'])){
 	$annee=$_POST['annee'];
 	foreach($annee as $pos => $an){
-		setcookie('an'.$pos,$an,time()+3600);
+		setcookie('an'.$pos,$an,time()+900);
 	}
 	$_SESSION["annee"] = $_POST['annee'];
 }
@@ -38,7 +39,7 @@ else {
 if(isset($_POST['caracteristique']) && !$_POST['caracteristique'][0]==""){
 	$caracteristique=$_POST['caracteristique'];
 	foreach($caracteristique as $pos => $carac){
-		setcookie('carac'.$pos,$carac,time()+3600);
+		setcookie('carac'.$pos,$carac,time()+900);
 	}
 	$_SESSION["caracteristique"] = $_POST['caracteristique'];
 }
@@ -55,12 +56,12 @@ else if(isset($_COOKIE['carac0'])){
 else {
 	$caracteristique="";
 }
-if($annee==="" && $groupe===""){ 
+if($annee==="" && $groupe==="" || $annee==="" && $caracteristique ===""){ 
 	session_unset();
 	session_destroy();    
 }
 //On regarde si le fichier LISTE_EXPLOITATIONS a été modifié il y a 10 minutes ou moins
-if(!isset($_COOKIE["Groupe_0"]) || filemtime('./Ressources/LISTE_EXPLOITATIONS.xlsx')>time()-36000){
+if(!isset($_COOKIE["Groupe_0"]) || filemtime('./Ressources/LISTE_EXPLOITATIONS.xlsx')>time()-600){
 	$groupes=affichageGroupes();
 }
 else if(isset($_COOKIE["Groupe_0"])) {
@@ -75,7 +76,7 @@ else if(isset($_COOKIE["Groupe_0"])) {
 	asort($groupes["Region"]);
     asort($groupes["Departement"]);
 }
-if(!isset($_COOKIE["Annee_0"]) || filemtime('./Ressources')>time()-36000) {
+if(!isset($_COOKIE["Annee_0"]) || filemtime('./Ressources')>time()-600) {
 	$annees=affichageAnnees();
 }
 else if(isset($_COOKIE["Annee_0"])){
@@ -87,7 +88,7 @@ else if(isset($_COOKIE["Annee_0"])){
 	asort($annees);
 }
 //Penser à remodifier quand doc final avec la liste des exploitations obtenu
-if(!isset($_COOKIE["Carac_0"]) || filemtime('./Ressources/ExtractionDonneesCheptel_L070-FR-38523088_2022-12-18.xlsx')>time()-36000) {
+if(!isset($_COOKIE["Carac_0"]) || filemtime('./Ressources/ExtractionDonneesCheptel_L070-FR-38523088_2022-12-18.xlsx')>time()-600) {
 	$caracteristiques=affichageCaracteristiques();
 }
 else if(isset($_COOKIE["Carac_0"])){

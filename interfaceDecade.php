@@ -18,7 +18,6 @@ else{
 if($groupe!=="" && $annee!==""){
 	$fichierFinal=lireFichier('fichierInter.xlsx',false);
 }
-if(!isset($_POST['sauvegarder'])){
 ?>
 <html lang="fr">
 <?php include 'php/head.php' ?>
@@ -42,9 +41,7 @@ if(!isset($_POST['sauvegarder'])){
 
 	<?php if($groupe!=="") { ?>
 	<div class="d-flex justify-content-center align-items-center mb-3">
-		<form method="post" action="interfaceDecade.php">
-			<button type="submit" class="btn btn-secondary" name="sauvegarder" value="Enregistrer fichier Excel">Sauvegarder résultats</button>
-		</form>
+		<a class="btn btn-secondary" href="fichierInter.xlsx" download="Moyennes croissances <?php echo $groupe ?>">Sauvegarder résultats</a>
 	</div>
 	<ul class="nav nav-tabs">
 		<li class="nav-item"><a class="nav-link" href="interface.php">Affichage par semaines</a></li>
@@ -68,8 +65,3 @@ if(!isset($_POST['sauvegarder'])){
 </div>
 </body>
 </html>
-<?php }
-	else {
-		enregistrementFichier($fichierFinal,$groupe,"");
-	}
-?>

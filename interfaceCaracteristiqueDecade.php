@@ -45,9 +45,6 @@ if($caracteristique!=="" && $annee!==""){
 	<?php if($caracteristique!=="") { ?>
 	<div class="d-flex justify-content-center align-items-center mb-3">
 		<a class="btn btn-secondary" href="fichierInter2.xlsx" download="Moyennes croissances parcelles <?php echo $caracteristique[0] ?>">Sauvegarder résultats</a>	
-		<!--<form method="post" action="interface.php">
-			<button type="submit" class="btn btn-secondary" name="sauvegarder" value="Enregistrer fichier Excel">Sauvegarder résultats</button>
-		</form>-->
 	</div>
 	<ul class="nav nav-tabs">
 		<li class="nav-item"><a class="nav-link" href="interfaceCaracteristique.php">Affichage par semaines</a></li>
