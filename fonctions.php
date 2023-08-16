@@ -325,7 +325,7 @@ function categorisationParcelles($nomFichier,$caracteristique) {
  * Prend en paramètre la liste des fichiers à lire et la liste des exploitations à selectionner
  * Renvoie un fichier Excel sous forme de tableur contenant les lignes selectionnées, une feuille de calcul par année est créée
  */
-function rassembleFichiers($listeFichiers, $exploitations) {
+function rassembleFichiers($listeFichiers, $exploitations, $parcelles) {
     \PhpOffice\PhpSpreadsheet\Calculation\Functions::setReturnDateType(
         \PhpOffice\PhpSpreadsheet\Calculation\Functions::RETURNDATE_EXCEL
     );
@@ -338,7 +338,10 @@ function rassembleFichiers($listeFichiers, $exploitations) {
             $spreadsheetRes->createSheet();
         }
         $sheetRes = $spreadsheetRes->getSheet($i);
-        $sheetRes->setTitle("20".$annee);
+        if($parcelles === null)
+            $sheetRes->setTitle("20".$annee);
+        else
+            $sheetRes->setTitle("20".$annee."-".$valeurCarac);
         $sheetRes->setCellValue('A1', 'Numéro exploitation');
         $sheetRes->setCellValue('B1', 'Groupe');
         $sheetRes->setCellValue('C1', 'Nom parcelle');
@@ -355,10 +358,18 @@ function rassembleFichiers($listeFichiers, $exploitations) {
             $highestRow = $worksheet->getHighestRow();
             $highestColumn = $worksheet->getHighestColumn();
             $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
-
+                
             for ($row = 2; $row <= $highestRow; ++$row) {
-                $valGroupe = $worksheet->getCellByColumnAndRow(1, $row)->getValue(); 
-                if(in_array($valGroupe, $exploitations)) {
+                $rechercheGroupe;
+                if($parcelles===null){
+                    $valGroupe = $worksheet->getCellByColumnAndRow(1, $row)->getValue(); 
+                    $rechercheGroupe = true;
+                }
+                else{
+                    $nomParcelle = trim($worksheet->getCellByColumnAndRow(4, $row)->getValue()); 
+                    $rechercheGroupe = false;
+                }
+                if(($rechercheGroupe && in_array($valGroupe, $exploitations)) || (!$rechercheGroupe && in_array($nomParcelle, $parcelles))) {
                     $idxCol=1; 
                     for ($col = 1; $col <= $highestColumnIndex; ++$col) {
                         $nvCol=chr($idxCol + ord('A') - 1);
@@ -372,20 +383,20 @@ function rassembleFichiers($listeFichiers, $exploitations) {
                             break;
                         }
                         else{
-                        if ($col != 2 && $col != 5 && $col != 8) {
-                            $sheetRes->setCellValue($nvCol.$nvLigne, $value);
-                            $idxCol++;
+                            if ($col != 2 && $col != 5 && $col != 8) {
+                                $sheetRes->setCellValue($nvCol.$nvLigne, $value);
+                                $idxCol++;
+                            }
+                            if($col == $highestColumnIndex){
+                                $h1 = $worksheet->getCellByColumnAndRow(10, $row)->getValue();
+                                $h2 = $worksheet->getCellByColumnAndRow(9, $row)->getValue();
+                                $d1 = $worksheet->getCellByColumnAndRow(7, $row)->getCalculatedValue();
+                                $d2 = $worksheet->getCellByColumnAndRow(6, $row)->getCalculatedValue();
+                                $value = calculCroissance($d1, $d2, $h1, $h2);
+                                $sheetRes->setCellValue('H'.$nvLigne, $value);
+                                $sheetRes->setCellValue('I'.$nvLigne, $d1);
+                            }
                         }
-                        if($col == $highestColumnIndex){
-                            $h1 = $worksheet->getCellByColumnAndRow(10, $row)->getValue();
-                            $h2 = $worksheet->getCellByColumnAndRow(9, $row)->getValue();
-                            $d1 = $worksheet->getCellByColumnAndRow(7, $row)->getCalculatedValue();
-                            $d2 = $worksheet->getCellByColumnAndRow(6, $row)->getCalculatedValue();
-                            $value = calculCroissance($d1, $d2, $h1, $h2);
-                            $sheetRes->setCellValue('H'.$nvLigne, $value);
-                            $sheetRes->setCellValue('I'.$nvLigne, $d1);
-                        }
-                    }
                     }
                     $nvLigne++;
                 }
