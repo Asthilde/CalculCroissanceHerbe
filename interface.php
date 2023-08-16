@@ -89,7 +89,7 @@ if(!isset($_POST['sauvegarder'])){*/
 			//var_dump($exploitations);
 			$fichiers=selectionFichier($annee);
 			//var_dump($fichiers);
-			$fichierInter=rassembleFichiers($fichiers, $exploitations);
+			$fichierInter=rassembleFichiers($fichiers, $exploitations, null, null);
 			//var_dump($fichierInter);
 			$fichierFinal=calculMoyenne($fichierInter,$groupe);
 

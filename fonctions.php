@@ -325,7 +325,7 @@ function categorisationParcelles($nomFichier,$caracteristique) {
  * Prend en paramètre la liste des fichiers à lire et la liste des exploitations à selectionner
  * Renvoie un fichier Excel sous forme de tableur contenant les lignes selectionnées, une feuille de calcul par année est créée
  */
-function rassembleFichiers($listeFichiers, $exploitations, $parcelles) {
+function rassembleFichiers($listeFichiers, $exploitations, $valeurCarac, $parcelles) {
     \PhpOffice\PhpSpreadsheet\Calculation\Functions::setReturnDateType(
         \PhpOffice\PhpSpreadsheet\Calculation\Functions::RETURNDATE_EXCEL
     );
