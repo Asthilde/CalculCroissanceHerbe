@@ -156,18 +156,18 @@ $parcelles=categorisationParcelles("ExtractionDonneesCheptel_L070-FR-38523088_20
 
 /*Test pour calculMoyenneParcelle*/
 $fichierInter = trouverMesuresParcelles($annees,$parcelles);
-$fichierFinal = calculMoyenneParcelles($fichierInter, "Potentiel de pousse");
+//$fichierFinal = calculMoyenneParcelles($fichierInter, "Potentiel de pousse");
 
 /*Test pour afficheFichiers*/
-$tabAffiche;
+/*$tabAffiche;
 for($i=0; $i<$fichierFinal->getSheetCount();$i+=2){
     $tabAffiche[]=$i;
-}
+}*/
 ?>
-<html>
+<!--<html>
     <body>
 <?php
-afficheFichier($fichierFinal, $tabAffiche, true);
+//afficheFichier($fichierFinal, $tabAffiche, true);
 ?>
 </body>
-</html>
+</html>-->
