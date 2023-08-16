@@ -91,7 +91,7 @@ if(!isset($_POST['sauvegarder'])){*/
 			//var_dump($fichiers);
 			$fichierInter=rassembleFichiers($fichiers, $exploitations, null, null);
 			//var_dump($fichierInter);
-			$fichierFinal=calculMoyenne($fichierInter,$groupe);
+			$fichierFinal=calculMoyenne($fichierInter,$groupe,null);
 
 			$tabAffiche;
 			for($i=0; $i<$fichierFinal->getSheetCount();$i+=2){
