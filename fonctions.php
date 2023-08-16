@@ -421,7 +421,17 @@ function trouverMesuresParcelles($listeFichiers, $listeParcelles) {
     //Prend plusieurs fichiers pour créer le fichier intermédiaire
     $spreadsheetRes = new Spreadsheet();
     $i=0;
-    foreach($listeFichiers as $annee => $fichiers) {
+
+    foreach($listeParcelles as $valeurCarac => $parcelles){
+        $spreadsheetInter = rassembleFichiers($listeFichiers,null,$valeurCarac,$parcelles);
+        $nbsheets=$spreadsheetInter->getSheetCount();
+        for($j=0; $j<$nbsheets;$j++){
+            $spreadsheetRes->addSheet($spreadsheetInter->getSheet($j),$i);
+            $i++;
+        }
+    }
+    /*foreach($listeFichiers as $annee => $fichiers) {
+        
         foreach($listeParcelles as $valeurCarac => $parcelles){
             if($i != 0){
                 $spreadsheetRes->createSheet();
@@ -482,7 +492,7 @@ function trouverMesuresParcelles($listeFichiers, $listeParcelles) {
             }
             $i++;
         }
-    }
+    }*/
     //$writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheetRes);
 	//$writer->save("fichierInterTest.xlsx");
     return($spreadsheetRes);
