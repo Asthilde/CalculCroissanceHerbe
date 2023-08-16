@@ -660,8 +660,8 @@ function creationSpreadsheet($nomsSheet,$worksheetRes,$indice,$nbFeuille,$choixG
     $worksheetRes->getColumnDimension('C')->setWidth(20);
     $worksheetRes->getColumnDimension('D')->setWidth(20);
     $worksheetRes->getColumnDimension('E')->setWidth(20);
-    $worksheetRes->getColumnDimension('F')->setWidth(20);
     if($choixGroupe) {
+        $worksheetRes->getColumnDimension('F')->setWidth(20);
         $worksheetRes->setCellValue('A1', 'Groupe');
         $worksheetRes->setCellValue('D1', 'Nombre d\'exploitations');
         $worksheetRes->setCellValue('E1', 'Nombre de mesures');
@@ -683,6 +683,45 @@ function creationSpreadsheet($nomsSheet,$worksheetRes,$indice,$nbFeuille,$choixG
         $worksheetRes->setCellValue('C1', 'Date début décade');
     }
     return $worksheetRes;
+}
+
+/**
+ * Crée et remplit une feuille du fichier Excel résultat contenant les moyennes de croissance pour chaque période pour le groupe ou la caractéristique et l'année demandés par l'utilisateur
+ * Prend en paramètres le fichier et la feuille de calcul résultat créés, le nom des feuilles du fichier intermédiaires, les indices permettant de positionner le curseur sur la bonne feuille de calcul
+ * le nombre de jours de la période (7 ou 10 si semaine ou décade), le tableau intermédiaire crée, le groupe ou la caractéristique choisi par l'utilisateur
+ * Renvoie l'indice p correspondant au numéro de la feuille de calcul à remplir dans le fichier résultat
+ */
+function creationSheetResultat($spreadsheetRes, $sheetRes, $nomsSheet, $i, $p, $tabInter2, $nbJrsPeriode, $groupe, $caracteristique){
+    if($nbJrsPeriode == 10){
+        $spreadsheetRes->createSheet();
+        $sheetRes = $spreadsheetRes->getSheet($p);
+    }
+    if($caracteristique === null)
+        $sheetRes=creationSpreadsheet($nomsSheet,$sheetRes,$i,$p,true);
+    else
+        $sheetRes=creationSpreadsheet($nomsSheet,$sheetRes,$i,$p,false);
+    $tabSem=calculPeriode($tabInter2,$nbJrsPeriode);
+    $j=2;
+    foreach($tabSem as $date => $tabValeurs) {
+        if($caracteristique === null)
+            $sheetRes->setCellValue('A' . $j, $groupe);
+        else
+            $sheetRes->setCellValue('A' . $j, $caracteristique.'_'.$nomsSheet[$i]);
+        $sheetRes->setCellValue('B' . $j, $j-1);
+        $sheetRes->setCellValue('C' . $j, $date);
+        if($caracteristique === null) {
+            $sheetRes->setCellValue('D' . $j, $tabValeurs[2]);
+            $sheetRes->setCellValue('E' . $j, $tabValeurs[1]);
+            $sheetRes->setCellValue('F' . $j, $tabValeurs[0]);
+        }
+        else{
+            $sheetRes->setCellValue('D' . $j, $tabValeurs[1]);
+            $sheetRes->setCellValue('E' . $j, $tabValeurs[0]);
+        }
+        $j++;
+    }
+    $p++;
+    return $p;
 }
 
 /**
@@ -761,189 +800,9 @@ function calculMoyenne($spreadsheet, $groupe, $caracteristique) {
                 $tabInter2[$date] = array($moy, $tabValeurs[1],$unites);
             }
             $p=creationSheetResultat($spreadsheetRes, $sheetRes, $nomsSheet, $i, $p, $tabInter2, 7, $groupe, $caracteristique);
-            $p=creationSheetResultat($spreadsheetRes, $sheetRes, $nomsSheet, $i, $p, $tabInter2, 10, $groupe, $caracteristique);
-            /*$sheetRes=creationSpreadsheet($nomsSheet,$sheetRes,$i,$p,true);
-            $tabSem=calculPeriode($tabInter2,7);
-            $j=2;
-            foreach($tabSem as $date => $tabValeurs) {
-                if($caracteristique === null)
-                    $sheetRes->setCellValue('A' . $j, $groupe);
-                else
-                    $sheetRes->setCellValue('A' . $j, $caracteristique.'_'.$nomsSheet[$i]);
-                $sheetRes->setCellValue('B' . $j, $j-1);
-                $sheetRes->setCellValue('C' . $j, $date);
-                if($caracteristique === null) {
-                    $sheetRes->setCellValue('D' . $j, $tabValeurs[2]);
-                    $sheetRes->setCellValue('E' . $j, $tabValeurs[1]);
-                    $sheetRes->setCellValue('F' . $j, $tabValeurs[0]);
-                }
-                else{
-                    $sheetRes->setCellValue('D' . $j, $tabValeurs[1]);
-                    $sheetRes->setCellValue('E' . $j, $tabValeurs[0]);
-                }
-                $j++;
-            }
-            $p++;
-            $spreadsheetRes->createSheet();
-            $sheetRes = $spreadsheetRes->getSheet($p);
-            $sheetRes=creationSpreadsheet($nomsSheet,$sheetRes,$i,$p,true);
-            $tabDecade=calculPeriode($tabInter2,10);
-            $j=2;
-            foreach($tabDecade as $date => $tabValeurs) {
-                if($caracteristique === null)
-                    $sheetRes->setCellValue('A' . $j, $groupe);
-                else
-                    $sheetRes->setCellValue('A' . $j, $caracteristique.'_'.$nomsSheet[$i]);
-                $sheetRes->setCellValue('B' . $j, $j-1);
-                $sheetRes->setCellValue('C' . $j, $date);
-                if($caracteristique === null) {
-                    $sheetRes->setCellValue('D' . $j, $tabValeurs[2]);
-                    $sheetRes->setCellValue('E' . $j, $tabValeurs[1]);
-                    $sheetRes->setCellValue('F' . $j, $tabValeurs[0]);
-                }
-                else{
-                    $sheetRes->setCellValue('D' . $j, $tabValeurs[1]);
-                    $sheetRes->setCellValue('E' . $j, $tabValeurs[0]);
-                }
-                $j++;
-            }
-            $p++;*/     
+            $p=creationSheetResultat($spreadsheetRes, $sheetRes, $nomsSheet, $i, $p, $tabInter2, 10, $groupe, $caracteristique); 
         }
     }
-    return($spreadsheetRes);
-}
-
-function creationSheetResultat($spreadsheetRes, $sheetRes, $nomsSheet, $i, $p, $tabInter2, $nbJrsPeriode, $groupe, $caracteristique){
-    if($nbJrsPeriode == 10){
-        $spreadsheetRes->createSheet();
-        $sheetRes = $spreadsheetRes->getSheet($p);
-    }
-    $sheetRes=creationSpreadsheet($nomsSheet,$sheetRes,$i,$p,true);
-    $tabSem=calculPeriode($tabInter2,$nbJrsPeriode);
-    $j=2;
-    foreach($tabSem as $date => $tabValeurs) {
-        if($caracteristique === null)
-            $sheetRes->setCellValue('A' . $j, $groupe);
-        else
-            $sheetRes->setCellValue('A' . $j, $caracteristique.'_'.$nomsSheet[$i]);
-        $sheetRes->setCellValue('B' . $j, $j-1);
-        $sheetRes->setCellValue('C' . $j, $date);
-        if($caracteristique === null) {
-            $sheetRes->setCellValue('D' . $j, $tabValeurs[2]);
-            $sheetRes->setCellValue('E' . $j, $tabValeurs[1]);
-            $sheetRes->setCellValue('F' . $j, $tabValeurs[0]);
-        }
-        else{
-            $sheetRes->setCellValue('D' . $j, $tabValeurs[1]);
-            $sheetRes->setCellValue('E' . $j, $tabValeurs[0]);
-        }
-        $j++;
-    }
-    $p++;
-    return $p;
-}
-
-/**
- * Créé le fichier Excel résultat contenant les moyennes de croissance pour chaque période pour la caractéristique et l'année demandées par l'utilisateur
- * Prend en paramètres la feuille de calcul intermédiaire créée et les caractéristiques choisies par l'utilisateur
- * Renvoie le fichier Excel final
- */
-function calculMoyenneParcelles($spreadsheet,$caracteristique) {
-    $nomsSheet = $spreadsheet->getSheetNames();
-    $spreadsheetRes = new Spreadsheet();
-    $p=0;
-    for($i=0; $i<$spreadsheet->getSheetCount(); $i++) {
-        //Lecture du spreadsheet donné et mise des valeurs dans tableau
-        $worksheet=$spreadsheet->getSheet($i);
-        $highestRow = $worksheet->getHighestRow();
-        $dates=array();   
-        //$dates est un tableau multidimensionnel ayant pour clé la date de mesure et pour valeur un tableau contenant la somme des croissances, le nombre de parcelles, un tabeau avec le nom des parcelles     
-        for ($row = 2; $row <= $highestRow; ++$row) {
-            $valDate = (string)$worksheet->getCellByColumnAndRow(4, $row)->getValue(); 
-            $valCroissance = $worksheet->getCellByColumnAndRow(8, $row)->getValue();
-            $valParcelle = (string)$worksheet->getCellByColumnAndRow(3, $row)->getValue();
-            $parcelles=array();
-                if(in_array($valDate,array_keys($dates))) {
-                    if($valCroissance>=0){
-                        $dates[$valDate][0]+=$valCroissance;
-                    }
-                    $dates[$valDate][1]++;
-                    $parcelles =  $dates[$valDate][2];
-                    $parcelles[] = $valParcelle;
-                    $dates[$valDate][2]= $parcelles;
-                }
-                else {
-                    if($valCroissance>=0){
-                        $dates[$valDate][0]=$valCroissance;
-                    }
-                    else{
-                        $dates[$valDate][0]=0;
-                    }
-                    $dates[$valDate][1]=1;
-                    $parcelles[] = $valParcelle;
-                    $dates[$valDate][2]= $parcelles;
-                }
-            }
-        $tabTrie=triDates($dates);
-
-        //Création du spreadsheet et worksheet résultat
-        if($i != 0){
-            $spreadsheetRes->createSheet();
-        }
-        $sheetRes = $spreadsheetRes->getSheet($p);
-        //Cas particulier : pas de mesures faites
-        if(empty($tabTrie)){ 
-            $sheetRes->setTitle($nomsSheet[$i]." Semaine");
-            $sheetRes->setCellValue('A1', 0);
-            $p++;
-            $spreadsheetRes->createSheet();
-            $sheetRes = $spreadsheetRes->getSheet($p);
-            $sheetRes->setTitle($nomsSheet[$i]." Décade");
-            $sheetRes->setCellValue('A1', 0);
-            $p++;
-        }
-        else {
-            //Calcul des moyennes de croissances pour les dates triées
-            $tabInter2=array();
-            foreach($tabTrie as $date => $tabValeurs) {
-                $moy=$tabValeurs[0]/$tabValeurs[1];
-                $moy=number_format($moy, 2);
-                $nbParcelle=array_count_values($tabValeurs[2]);
-                $parcelle=array_keys($nbParcelle);
-                $tabInter2[$date] = array($moy, $tabValeurs[1],$parcelle);
-            }
-            //var_dump($tabInter2);
-            //echo '<br/>';
-            $sheetRes=creationSpreadsheet($nomsSheet,$sheetRes,$i,$p,false);
-            $tabSem=calculPeriode($tabInter2,7);
-            $j=2;
-            foreach($tabSem as $date => $tabValeurs) {
-                $sheetRes->setCellValue('A' . $j, $caracteristique.'_'.$nomsSheet[$i]);
-                $sheetRes->setCellValue('B' . $j, $j-1);
-                $sheetRes->setCellValue('C' . $j, $date);
-                $sheetRes->setCellValue('D' . $j, $tabValeurs[1]);
-                $sheetRes->setCellValue('E' . $j, $tabValeurs[0]);
-                $j++;
-            }
-            $p++;
-            $spreadsheetRes->createSheet();
-            $sheetRes = $spreadsheetRes->getSheet($p);
-            $sheetRes=creationSpreadsheet($nomsSheet,$sheetRes,$i,$p,false);
-            $tabDecade=calculPeriode($tabInter2,10);
-            $j=2;
-            foreach($tabDecade as $date => $tabValeurs) {
-                $sheetRes->setCellValue('A' . $j, $caracteristique.'_'.$nomsSheet[$i]);
-                $sheetRes->setCellValue('B' . $j, $j-1);
-                $sheetRes->setCellValue('C' . $j, $date);
-                $sheetRes->setCellValue('D' . $j, $tabValeurs[1]);
-                $sheetRes->setCellValue('E' . $j, $tabValeurs[0]);
-                $j++;
-            }
-            $p++;     
-        }
-    }
-    //$writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheetRes);
-	//$writer->save("fichierFinalTest.xlsx");
     return($spreadsheetRes);
 }
 

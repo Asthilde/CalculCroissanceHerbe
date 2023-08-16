@@ -81,7 +81,7 @@ include 'php/affichageSelection.php';
 			foreach($caracteristique as $caracChoisie){
 				$parcelles = categorisationParcelles("ExtractionDonneesCheptel_L070-FR-38523088_2022-12-18.xlsx",$caracChoisie);
 				$fichierInter = trouverMesuresParcelles($fichiers,$parcelles);
-				$fichierFinal = calculMoyenneParcelles($fichierInter, $caracChoisie);
+				$fichierFinal = calculMoyenne($fichierInter, null, $caracChoisie);
 			}
 			
 			$tabAffiche;
