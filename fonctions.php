@@ -179,7 +179,7 @@ function affichageValeursCaracteristique($caracChoisie) {
         $valeurs=array();
         $row++;
         while($row<$highestRow && $worksheet->getCellByColumnAndRow($column, $row)->getValue()!=NULL){
-            $valLue=trim(($worksheet->getCellByColumnAndRow($column, $row)->getValue()));
+            $valLue=creationNomSheetValide(trim(($worksheet->getCellByColumnAndRow($column, $row)->getValue())));
             if(!in_array($valLue,$valeurs)){
                 $valeurs[]=$valLue;
             }
@@ -289,6 +289,10 @@ function creationNomSheetValide($nomValeurCaracteristique){
         return $nomValide[0];
     else if(preg_match('/(<|>)\s[0-9]{1,}|[0-9]{1,}-[0-9]{1,3}/',$nomValeurCaracteristique,$nomValide))
         return "'".$nomValide[0]."'";
+    $caracInvalides = array("é", "é");
+    $chValide = str_replace($caracInvalides,"e",$nomValeurCaracteristique);
+    $chValide = substr($chValide,0,strpos($chValide,'('));
+    return $chValide;
 }
 
 /**
@@ -315,6 +319,7 @@ function categorisationParcelles($nomFichier,$caracteristique) {
         }
         $nomParcelle = trim(($worksheet->getCellByColumnAndRow($columnP, $row)->getValue()));
         $nomValeur = trim(($worksheet->getCellByColumnAndRow($columnC, $row)->getValue()));
+        $nomValeur=creationNomSheetValide($nomValeur);
         while($nomParcelle!==NULL && $nomValeur!==NULL && $row<$highestRow) {
             if(in_array($nomValeur,$listeValeurs)){
                 $listeParcelles[$nomValeur][]=$nomParcelle;
@@ -322,6 +327,7 @@ function categorisationParcelles($nomFichier,$caracteristique) {
             $row++;
             $nomParcelle = trim(($worksheet->getCellByColumnAndRow($columnP, $row)->getValue()));
             $nomValeur = trim(($worksheet->getCellByColumnAndRow($columnC, $row)->getValue()));
+            $nomValeur=creationNomSheetValide($nomValeur);
         }
     }
     return $listeParcelles;

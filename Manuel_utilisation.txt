@@ -1,0 +1,22 @@
+Voici un petit manuel d'utilisation pour pouvoir comprendre le fonctionnement de l'interface web.
+
+En tant qu'utilisateur de la plateforme :
+Pour pouvoir insérer de nouvelles données de croissances d'herbes, il faut mettre les nouveaux fichiers dans le dossier Ressources et les nommer de la manière suivante : 'Croissances [année en 4 chiffres] [Nom du Groupe départemental]'.
+
+Pour pouvoir ajouter de nouvelles exploitations, il faut modifier le fichier LISTE_EXPLOITATIONS.xlsx en ajoutant les informations requises : numéro d'exploitation, nom d'exploitation, groupe régional et groupe départemental.
+
+Pour le moment, la liste des parcelles et de leur caractéristique est lue dans le fichier ExtractionDonneesCheptel ... du même dossier. 
+--> IL SERA PEUT ETRE MODIFIE A L'AVENIR. IL FAUDRA EN DISCUTER AVEC LES UTILISATEUR ET LE PROGRAMMEUR.
+
+Une fois les données sauvegardées dans les fichiers correspondants, démarrez le logiciel xampp et le module Apache. Allez sur votre navigateur web et rentrez l'URL suivant : localhost/InterfaceCroissanceHerbe/interface.php pour obtenir les moyennes de croissances d'herbe par groupe d'exploitations. Si vous souhaitez directement aller sur le site pour faire le calcul selon les caractéristiques de parcelles, rentrez l'URL suivant : localhost/InterfaceCroissanceHerbe/interfaceCaracteristique.php
+
+Ensuite, suivez les instructions en selectionnant un groupe d'exploitation ou une caractéristique de parcelles et une ou plusieurs années et obtenez les résultats voulus. Les tableaux affichés sur l'interface peuvent être enregistrés à l'aide du bouton dédié, vous permettant d'extraire un fichier excel contenant tous les tableaux, un par feuille de calcul.
+
+
+
+En tant que programmeur : 
+Les fichiers de l'interface web sont disponibles à la racine du dossier. Ces derniers sont : interface.php, interfaceDecade.php, interfaceCaracteristique.php et interfaceCaracteristiqueDecade.php. Les fichiers permettant le fonctionnement de l'interface sont également disponible au même endroit et sont : fonctions.php, fichierInter.xlsx et fichierInter2.xlsx. Les deux derniers fichiers sont crées et écrasés à chaque nouvelle requête effectué sur les pages interface.php et interfaceCaracteristique.php. Ce sont les fichiers contenant les tableaux de résultats affichés à l'utilisateur et qui peuvent être téléchargés par ce dernier.
+
+Les autres dossiers contiennent des fichiers du type correspondant au nom du dossier : js pour les éléments d'interaction en javascript, css pour les feuilles de style, images pour les images affichées sur les pages web et php pour les éléments php en commun sur les pages web qui peuvent être rassemblés (head et footer).
+
+Les dossiers lib et vendor sont des dossiers contenant les fichiers permettant la création et le fonctionnement du site avec l'utilisation des libraries PHPSpreadSheet, JQuery et Bootstrap. ILS NE DOIVENT PAS ETRE MODIFIES SAUF DYSFONCTIONNEMENT PARTICULIER !
