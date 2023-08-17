@@ -284,6 +284,13 @@ function selectionExploitations($fichier,$groupe) {
     return($listeExploitations);
 }
 
+function creationNomSheetValide($nomValeurCaracteristique){
+    if(preg_match('/N\w{2,}\s\w+/',$nomValeurCaracteristique,$nomValide))
+        return $nomValide[0];
+    else if(preg_match('/(<|>)\s[0-9]{1,}|[0-9]{1,}-[0-9]{1,3}/',$nomValeurCaracteristique,$nomValide))
+        return "'".$nomValide[0]."'";
+}
+
 /**
  * Catégorise les parcelles qui ont une même valeur pour une caractéristique donnée
  * Prend en paramètre le nom du fichier contenant les informations et la caractéristique choisie
@@ -321,9 +328,9 @@ function categorisationParcelles($nomFichier,$caracteristique) {
 }
 
 /**
- * Rassemble les fichiers contenant les mesures et les exploitations à selectionner et renvoie un tableur contenant les lignes correspondant aux exploitations selectionnées.
- * Prend en paramètre la liste des fichiers à lire et la liste des exploitations à selectionner
- * Renvoie un fichier Excel sous forme de tableur contenant les lignes selectionnées, une feuille de calcul par année est créée
+ * Rassemble les fichiers contenant les mesures et les exploitations ou parcelles à selectionner et renvoie un tableur contenant les lignes correspondant aux exploitations/parcelles selectionnées.
+ * Prend en paramètre la liste des fichiers à lire et la liste des exploitations ou des parcelles à selectionner et de la valeur de la caractéristique
+ * Renvoie un fichier Excel sous forme de tableur contenant les lignes selectionnées, une feuille de calcul par année et par valeur de caractéristique est créée 
  */
 function rassembleFichiers($listeFichiers, $exploitations, $valeurCarac, $parcelles) {
     \PhpOffice\PhpSpreadsheet\Calculation\Functions::setReturnDateType(

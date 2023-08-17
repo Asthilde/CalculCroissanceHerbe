@@ -139,6 +139,10 @@ var_dump(affichageCaracteristiques());*/
 /*Test pour affichageValeursCaracteristique
 var_dump(affichageValeursCaracteristique("Hydromorphie Sol"));*/
 
+/*Test pour creationNomSheetValide*/
+$nomValide = creationNomSheetValide("Non connue");
+echo $nomValide;
+
 /*Test pour categorisationParcelles
 var_dump(categorisationParcelles("ExtractionDonneesCheptel_L070-FR-38523088_2022-12-18.xlsx","Potentiel de pousse"));
 $parcelles = categorisationParcelles("ExtractionDonneesCheptel_L070-FR-38523088_2022-12-18.xlsx","Potentiel de pousse");
@@ -146,17 +150,18 @@ foreach($parcelles as $valeurParcelle => $nomParcelle){
     echo $nomParcelle.'-';
 }*/
 
-/*Test pour trouverMesuresParcelles*/
+/*Test pour trouverMesuresParcelles
 $annees=selectionFichier(array("2020"));
-$parcelles=categorisationParcelles("ExtractionDonneesCheptel_L070-FR-38523088_2022-12-18.xlsx","Potentiel de pousse");
+$parcelles=categorisationParcelles("ExtractionDonneesCheptel_L070-FR-38523088_2022-12-18.xlsx","Fertilisation Azotee Annuelle");
+var_dump($parcelles);*/
 //var_dump($annees);
 //var_dump($parcelles);
 //trouverMesuresParcelles($annees,$parcelles);
 //echo 'testé';
 
-/*Test pour calculMoyenneParcelle*/
+/*Test pour calculMoyenneParcelle
 $fichierInter = trouverMesuresParcelles($annees,$parcelles);
-//$fichierFinal = calculMoyenneParcelles($fichierInter, "Potentiel de pousse");
+$fichierFinal = calculMoyenneParcelles($fichierInter, "Potentiel de pousse");*/
 
 /*Test pour afficheFichiers*/
 /*$tabAffiche;
