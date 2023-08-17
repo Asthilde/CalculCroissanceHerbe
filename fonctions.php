@@ -291,7 +291,8 @@ function creationNomSheetValide($nomValeurCaracteristique){
         return "'".$nomValide[0]."'";
     $caracInvalides = array("é", "é");
     $chValide = str_replace($caracInvalides,"e",$nomValeurCaracteristique);
-    $chValide = substr($chValide,0,strpos($chValide,'('));
+    if(strpos($chValide, '('))
+        $chValide = substr($chValide,0,strpos($chValide,'('));
     return $chValide;
 }
 
